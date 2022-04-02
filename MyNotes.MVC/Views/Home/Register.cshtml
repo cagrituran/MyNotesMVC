@@ -1,12 +1,13 @@
 ﻿@using MyNotes.BusinessLayer.ValueObject
-@model LoginViewModel
-@{
-    ViewBag.Title = "Login";
-}
+@model RegisterViewModel
 
+@{
+    ViewBag.Title = "Register";
+}
+<link href="~/Content/Login.RegisterStyle.css" rel="stylesheet" />
 @using (Html.BeginForm())
 {
-    <div class="logreg">
+    <div class="logreg mt-1 ">
         <main class="form-signin">
             <form>
                 <img class="mb-4 rounded-circle" src="~/Images/user2.png" alt="test" width="144" height="120">
@@ -17,18 +18,38 @@
                 {
                     <a href="@ViewBag.SetLink" class="btn btn-primary">Activate</a>
                 }
+                <div class="form-floating">
+                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control", placeholder = "Adi", id = "floatingInput" })
 
+                    <label for="floatingInput">Adi</label>
+                </div>
+                <div class="form-floating">
+                    @Html.TextBoxFor(model => model.Lastname, new { @class = "form-control", placeholder = "Soyadi", id = "floatingInput" })
+
+                    <label for="floatingInput">Soyadi</label>
+                </div>
 
                 <div class="form-floating">
-                    @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", placeholder = "Kullanici Adi", id = "floatingInput" })
+                    @Html.TextBoxFor(model => model.Username, new { @class = "form-control", placeholder = "Kullanici Adi", id = "floatingInput" })
                     @*<input type="text" class="form-control" id="floatingInput" placeholder="Kullanici Adi">*@
                     <label for="floatingInput">Kullanici Adi</label>
+                </div>
+                <div class="form-floating">
+                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control", placeholder = "E-Mail", id = "floatingInput" })
+                    @*<input type="text" class="form-control" id="floatingInput" placeholder="Kullanici Adi">*@
+                    <label for="floatingInput">Email</label>
                 </div>
                 <div class="form-floating">
                     @Html.TextBoxFor(model => model.Password, new { @class = "form-control", placeholder = "Sifre", id = "floatingPassword", type = "password" })
                     @*<input type="password" class="form-control" id="floatingPassword" placeholder="Sifre">*@
                     <label for="floatingPassword">Sifre</label>
                 </div>
+                <div class="form-floating">
+                    @Html.TextBoxFor(model => model.RePassword, new { @class = "form-control", placeholder = "Sifre Tekrari", id = "floatingRePassword", type = "password" })
+                    @*<input type="password" class="form-control" id="floatingPassword" placeholder="Sifre">*@
+                    <label for="floatingPassword">Sifre Tekrari</label>
+                </div>
+
 
                 @*<div class="checkbox mb-3">
                         <label>
@@ -53,3 +74,4 @@
     });
 
 </script>
+
