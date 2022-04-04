@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MyNotes.BusinessLayer;
+using MyNotes.BusinessLayer.Models;
 using MyNotes.DataAccessLayer;
 using MyNotes.EntityLayer;
 
@@ -14,15 +15,15 @@ namespace MyNotes.MVC.Controllers
 {
     public class CommentController : Controller
     {
-        private MyNoteContext db = new MyNoteContext();
+        // private MyNoteContext db = new MyNoteContext();
         private NoteManager nm = new NoteManager();
         private CommandManager cm = new CommandManager();
 
         // GET: Comment
         public ActionResult Index()
         {
-            var comments = db.Comments.Include(c => c.Note).Include(c => c.Owner);
-            return View(comments.ToList());
+
+            return View(cm.List());
         }
 
         // GET: Comment/Details/5
@@ -32,7 +33,7 @@ namespace MyNotes.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Comment comment = db.Comments.Find(id);
+            Comment comment = cm.Find(x => x.Id == id);
             if (comment == null)
             {
                 return HttpNotFound();
@@ -43,8 +44,8 @@ namespace MyNotes.MVC.Controllers
         // GET: Comment/Create
         public ActionResult Create()
         {
-            ViewBag.NoteId = new SelectList(db.Notes, "Id", "Tittle");
-            ViewBag.OwnerId = new SelectList(db.MyNotesUsers, "Id", "Name");
+
+
             return View();
         }
 
@@ -53,18 +54,33 @@ namespace MyNotes.MVC.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Text,NoteId,OwnerId,CreatedOn,ModifiedOn,ModifiedUserName")] Comment comment)
+        public ActionResult Create(Comment comment, int? noteId)
         {
+            ModelState.Remove("CreatedOn");
+            ModelState.Remove("ModifiedOn");
+            ModelState.Remove("ModifiedUserName");
             if (ModelState.IsValid)
             {
-                db.Comments.Add(comment);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (noteId == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                Note note = nm.Find(s => s.Id == noteId);
+                if (note == null)
+                {
+                    return new HttpNotFoundResult();
+                }
+                comment.Note = note;
+                comment.Owner = CurrentSession.User;
+
+                if (cm.Insert(comment) > 0)
+                {
+                    return Json(new { result = true }, JsonRequestBehavior.AllowGet);
+                }
+
             }
 
-            ViewBag.NoteId = new SelectList(db.Notes, "Id", "Tittle", comment.NoteId);
-            ViewBag.OwnerId = new SelectList(db.MyNotesUsers, "Id", "Name", comment.OwnerId);
-            return View(comment);
+            return Json(new { result = false }, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Comment/Edit/5
@@ -74,13 +90,12 @@ namespace MyNotes.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Comment comment = db.Comments.Find(id);
+            Comment comment = cm.Find(s => s.Id == id);
             if (comment == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.NoteId = new SelectList(db.Notes, "Id", "Tittle", comment.NoteId);
-            ViewBag.OwnerId = new SelectList(db.MyNotesUsers, "Id", "Name", comment.OwnerId);
+
             return View(comment);
         }
 
@@ -88,18 +103,28 @@ namespace MyNotes.MVC.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Text,NoteId,OwnerId,CreatedOn,ModifiedOn,ModifiedUserName")] Comment comment)
+
+        public ActionResult Edit(int? id, string text)
         {
-            if (ModelState.IsValid)
+            if (id == null)
             {
-                db.Entry(comment).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
             }
-            ViewBag.NoteId = new SelectList(db.Notes, "Id", "Tittle", comment.NoteId);
-            ViewBag.OwnerId = new SelectList(db.MyNotesUsers, "Id", "Name", comment.OwnerId);
-            return View(comment);
+            Comment comment = cm.Find(s => s.Id == id);
+            if (comment == null)
+            {
+                return HttpNotFound();
+            }
+
+            comment.Text = text;
+            if (cm.Update(comment) > 0)
+            {
+                return Json(new { result = true }, JsonRequestBehavior.AllowGet);
+            }
+
+
+            return Json(new { result = false }, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Comment/Delete/5
@@ -109,24 +134,22 @@ namespace MyNotes.MVC.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Comment comment = db.Comments.Find(id);
+            Comment comment = cm.Find(s => s.Id == id);
             if (comment == null)
             {
                 return HttpNotFound();
             }
-            return View(comment);
+            if (cm.Delete(comment) > 0)
+            {
+                return Json(new { result = true }, JsonRequestBehavior.AllowGet);
+            }
+
+
+            return Json(new { result = false }, JsonRequestBehavior.AllowGet);
         }
 
-        // POST: Comment/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Comment comment = db.Comments.Find(id);
-            db.Comments.Remove(comment);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+
+
         public ActionResult ShowNoteComments(int? id)
         {
             if (id == null)
@@ -141,13 +164,6 @@ namespace MyNotes.MVC.Controllers
             return PartialView("_PartialComments", note.Comments);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+
     }
 }

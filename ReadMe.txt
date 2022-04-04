@@ -65,6 +65,17 @@ HomeControllerda LogOut a CurrentSession clasýnýn metodu clearlanarak eklendi
 HomeControllerda Register ActionResultý yazýlýp Add View Yapýldý ve ValueObject içine RegisterViewModel açýldý
 Ýçine Kodlar yazýldý sonra Register Viewýný doldurduk ve Sayfayý kullanýlabilir hale getirdik
 Sonra Login.RegisterStyle.css Contentin içine acýp css kodlarýný yazdýk ve login,register viewýnýn içine linkini hrefledik
+---------------------------------------------------------------04.04.22-----------------------------------------------------
+PartialComments'e kodlar eklendi ( sadece ilgili notun yorumlarý gözükmesi için)
+Giris Yapýldýgýnda Yorumlara Týklandýgýnda Yorumunuz açýlmasý gönder butonu eklenmesi saðlandý
+CommentController degistirildi
+Index htmlin altýna jquery kodlarý yazýldý
+MyNotes.Common diye katman olusturduk(Amacýmýz update yaptýgýmýz zaman yorumun username'i system diye degismesi sorununu çözmek)
+ICommon diye interface açtýk içine sonra DefaultCommon diye class açýp interface'i içine implemente ettik
+App diye bir class olusturduk içinde bir nesne olusturduk 
+ve MVC'nin içine Inýt diye kalsör açýp içine WebCommon diye class açýp içine kodlar yazýldý 
+Ardýndan Global.asaxda metodu çalýstýrdýk
+Repository'e gidip Update kýsmýný deðiþtirdik
 
 
 
