@@ -20,7 +20,7 @@ namespace MyNotes.EntityLayer
 
         public int LikeCount { get; set; } // Yazdığım yorumun almış oldugu beğeni sayısını takipedecek.
 
-       
+        public int? CategoryId { get; set; }
 
         public virtual MyNotesUser Owner { get; set; }  //Notelarım user la bağlantılı olacak, virtual ezme için kullanılır (Ekstra özellik katabilmek içn). MyNotesUser classına gidip Owner ekliycek.
 
@@ -32,7 +32,12 @@ namespace MyNotes.EntityLayer
 
 
 
+        public Note()
+        {
+            Comments = new List<Comment>();
 
+            Likes = new List<Liked>();
+        }
 
         //iki tane yükleme eylemim var var(Bir nesneyi doldurma).
 

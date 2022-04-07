@@ -13,9 +13,7 @@ namespace MyNotes.EntityLayer
     {
         [StringLength(300), Required] 
         public string Text { get; set; }
-        public int NoteId { get; set; }
-
-        public int OwnerId { get; set; }
+       
 
         public virtual Note Note { get; set; }
         public virtual MyNotesUser Owner { get; set; }
