@@ -63,5 +63,62 @@ namespace MyNotes.MVC.Controllers
             }
             return View(cat);
         }
+
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
+            }
+
+            CategoryViewModel category = cm.GetEditCat(id);
+            if (category == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(category);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(CategoryViewModel cat)
+        {
+            ModelState.Remove("Category.CreatedOn");
+            ModelState.Remove("Category.ModifiedOn");
+            ModelState.Remove("Category.ModifiedUserName");
+            if (ModelState.IsValid)
+            {
+                cm.UpdateCat(cat);
+                CacheHelper.RemoveCategoriesFromCache();
+                return RedirectToAction("Index");
+            }
+
+            return View(cat);
+        }
+
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
+            }
+
+            CategoryViewModel category = cm.GetEditCat(id);
+            if (category == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(category);
+        }
+        [HttpPost,ActionName("Delete")]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            cm.DeleteCat(id);
+            CacheHelper.RemoveCategoriesFromCache();
+            return RedirectToAction("Index");
+        }
     }
 }
