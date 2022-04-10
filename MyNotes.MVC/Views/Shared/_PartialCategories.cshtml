@@ -21,12 +21,27 @@
         </a>
         @foreach (var cat in list)
         {
-            <a href="/Home/ByCategoryId/@cat.Id" title="@cat.Description" class="list-group-item list-group-item-action">
-                <span>
-                    <i class="fas fa-angle-double-right"></i>
-                </span> <span id="feleket">@cat.Tittle</span>  <span style="float:right">@cat.Notes.Count</span>
+            if (ViewBag.CategoryIdx == cat.Id)
+            {
+                <a href="/Home/ByCategoryId/@cat.Id" title="@cat.Description" class="list-group-item list-group-item-action active">
+                    <span>
+                        <i class="fas fa-angle-double-right"></i>
+                    </span> @cat.Tittle  <span style="float:right">@cat.Notes.Count</span>
 
-            </a>
+                </a>
+            }
+
+            else
+            {
+                <a href="/Home/ByCategoryId/@cat.Id" title="@cat.Description" class="list-group-item list-group-item-action">
+                    <span>
+                        <i class="fas fa-angle-double-right"></i>
+                    </span> @cat.Tittle  <span style="float:right">@cat.Notes.Count</span>
+
+                </a>
+            }
+
+
         }
     </div>
 </div>

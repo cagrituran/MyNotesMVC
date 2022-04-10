@@ -25,6 +25,7 @@ namespace MyNotes.MVC.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             List<Note> notes = nm.QList().Where(s => s.Category.Id == id && s.isDraft == false).OrderByDescending(s => s.ModifiedOn).ToList();
+            ViewBag.CategoryIdx = id;
             return View("Index", notes);
         }
         public ActionResult Login()
