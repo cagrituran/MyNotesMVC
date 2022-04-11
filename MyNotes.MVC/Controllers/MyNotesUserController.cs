@@ -7,140 +7,130 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MyNotes.BusinessLayer;
-using MyNotes.BusinessLayer.Models;
 using MyNotes.DataAccessLayer;
 using MyNotes.EntityLayer;
 
 namespace MyNotes.MVC.Controllers
 {
-    public class NoteController : Controller
+    public class MyNotesUserController : Controller
     {
-        private NoteManager nm = new NoteManager();
-        private CategoryManager cm = new CategoryManager();
-        private LikedManager lm = new LikedManager();
+        private readonly MyNotesUserManager mum = new MyNotesUserManager();
 
-        // GET: Note
+        // GET: MyNotesUser
         public ActionResult Index()
         {
-            List<Note> notes = nm.QList().Include("Category").Include("Owner")
-                .Where(x => x.Owner.Id == CurrentSession.User.Id).OrderByDescending(s => s.ModifiedOn).ToList();
-            return View(notes);
+            return View(mum.List());
         }
 
-        public ActionResult MyLikedNotes()
-        {
-            var notes = lm.List(s => s.LikedUser.Id == CurrentSession.User.Id).Select(s => s.Note);
-            return View("Index", notes);
-        }
-        // GET: Note/Details/5
+        // GET: MyNotesUser/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
-            Note note = nm.Find(s => s.Id == id);
-            if (note == null)
+            MyNotesUser myNotesUser = mum.Find(s => s.Id == id);
+            if (myNotesUser == null)
             {
                 return HttpNotFound();
             }
-            return View(note);
+            return View(myNotesUser);
         }
 
-        // GET: Note/Create
+        // GET: MyNotesUser/Create
         public ActionResult Create()
         {
-            ViewBag.CategoryId = new SelectList(CacheHelper.GetCategoriesFromCache(), "Id", "Tittle");
             return View();
         }
 
-        // POST: Note/Create
+        // POST: MyNotesUser/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create( Note note)
+        public ActionResult Create(MyNotesUser myNotesUser)
         {
             ModelState.Remove("CreatedOn");
             ModelState.Remove("ModifiedOn");
             ModelState.Remove("ModifiedUserName");
             if (ModelState.IsValid)
             {
-                note.Owner = CurrentSession.User;
-                nm.Insert(note);
+                BusinessLayerResult<MyNotesUser> res = mum.Insert(myNotesUser);
+                if (res.Errors.Count > 0)
+                {
+                    res.Errors.ForEach(x => ModelState.AddModelError("", x.Message));
+                    return View(myNotesUser);
+                }
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CategoryId = new SelectList(CacheHelper.GetCategoriesFromCache(), "Id", "Tittle",note.CategoryId);
-            return View(note);
+            return View(myNotesUser);
         }
 
-        // GET: Note/Edit/5
+        // GET: MyNotesUser/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
-            Note note = nm.Find(s => s.Id == id);
-            if (note == null)
+            MyNotesUser myNotesUser = mum.Find(s => s.Id == id);
+            if (myNotesUser == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.CategoryId = new SelectList(CacheHelper.GetCategoriesFromCache(), "Id", "Tittle", note.CategoryId);
-            return View(note);
+            return View(myNotesUser);
         }
 
-        // POST: Note/Edit/5
+        // POST: MyNotesUser/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit( Note note)
+        public ActionResult Edit(MyNotesUser myNotesUser)
         {
             ModelState.Remove("CreatedOn");
             ModelState.Remove("ModifiedOn");
             ModelState.Remove("ModifiedUserName");
             if (ModelState.IsValid)
             {
-                Note dbNote = nm.Find(s => s.Id == note.Id);
-                dbNote.isDraft = note.isDraft;
-                dbNote.CategoryId = note.CategoryId;
-                dbNote.Text = note.Text;
-                dbNote.Tittle = note.Tittle;
+                BusinessLayerResult<MyNotesUser> res = mum.Update(myNotesUser);
+                if (res.Errors.Count > 0)
+                {
+                    res.Errors.ForEach(s => ModelState.AddModelError("", s.Message));
+
+                }
                 return RedirectToAction("Index");
             }
-            ViewBag.CategoryId = new SelectList(CacheHelper.GetCategoriesFromCache(), "Id", "Tittle", note.CategoryId);
-            return View(note);
+            return View(myNotesUser);
         }
 
-        // GET: Note/Delete/5
+        // GET: MyNotesUser/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Note note = nm.Find(s=>s.Id==id);
-            if (note == null)
+            MyNotesUser myNotesUser = mum.Find(s => s.Id == id);
+            if (myNotesUser == null)
             {
                 return HttpNotFound();
             }
-            return View(note);
+            return View(myNotesUser);
         }
 
-        // POST: Note/Delete/5
+        // POST: MyNotesUser/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Note note = nm.Find(s => s.Id == id);
-            nm.Delete(note);
+            MyNotesUser myNotesUser = mum.Find(s => s.Id == id);
+            mum.Delete(myNotesUser);
+
             return RedirectToAction("Index");
         }
 
-       
+
     }
 }

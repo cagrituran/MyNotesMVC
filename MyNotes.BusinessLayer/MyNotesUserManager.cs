@@ -96,5 +96,71 @@ namespace MyNotes.BusinessLayer
             }
             return res;
         }
+        public new BusinessLayerResult<MyNotesUser> Insert(MyNotesUser data)
+        {
+            MyNotesUser user = Find(s => s.UserName == data.UserName || s.Email == data.Email);
+            res.Result = data;
+            if (user != null)
+            {
+                if (user.UserName == data.UserName)
+                {
+                    res.AddError(EntityLayer.Messages.ErrorMessageCode.UserNameAlreadyExist, "Bu kullanici adi daha once alinmis");
+                }
+                if (user.Email == data.Email)
+                {
+                    res.AddError(EntityLayer.Messages.ErrorMessageCode.EmailAlreadyExist, "Bu email daha once alinmis");
+
+                }
+            }
+            else
+            {
+                res.Result.ActivateGuid = Guid.NewGuid();
+                if (base.Insert(res.Result) == 0)
+                {
+                    res.AddError(EntityLayer.Messages.ErrorMessageCode.UserCouldNotInserted, "Kullanici Eklenemedi");
+                }
+            }
+            return res;
+        }
+        public new BusinessLayerResult<MyNotesUser> Update(MyNotesUser data)
+        {
+            MyNotesUser user = Find(s => s.Id != data.Id && (s.UserName == data.UserName || s.Email == data.Email));
+            if (user != null && user.Id != data.Id)
+            {
+                if (user.UserName == data.UserName)
+                {
+                    res.AddError(EntityLayer.Messages.ErrorMessageCode.UserNameAlreadyExist, "Bu kullanici adını alamazsınız");
+                }
+                if (user.Email == data.Email)
+                {
+                    res.AddError(EntityLayer.Messages.ErrorMessageCode.EmailAlreadyExist, "Bu email adını alamazsınız");
+                }
+                return res;
+            }
+            res.Result = Find(s => s.Id == data.Id);
+            res.Result.Email = data.Email;
+            res.Result.Name = data.Name;
+            res.Result.LastName = data.LastName;
+            res.Result.Password = data.Password;
+            res.Result.UserName = data.UserName;
+            res.Result.IsAdmin = data.IsAdmin;
+            res.Result.IsActive = data.IsActive;
+
+            if (base.Update(res.Result) > 0)
+            {
+                res.AddError(EntityLayer.Messages.ErrorMessageCode.UserCouldNotUpdated, "Kullanici bilgileri guncellenemedi");
+            }
+            return res;
+        }
+
+        public BusinessLayerResult<MyNotesUser> GetUserById(int id)
+        {
+            res.Result = Find(s => s.Id == id);
+            if (res.Result == null)
+            {
+                res.AddError(EntityLayer.Messages.ErrorMessageCode.UserNotFound, "Kullanici bulunamadi");
+            }
+            return res;
+        }
     }
 }
