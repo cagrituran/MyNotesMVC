@@ -37,22 +37,26 @@ namespace MyNotes.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
+                TempData["pass"] = model.Password;
+                TempData["uname"] = model.UserName;
+
                 res = mum.LoginUser(model);
                 if (res.Errors.Count > 0)
                 {
-                    if (res.Errors.Find(x => x.Code == EntityLayer.Messages.ErrorMessageCode.UserIsNotActive) != null)
+                    if (res.Errors.Find(x => x.Code == ErrorMessageCode.UserIsNotActive) != null)
                     {
+                        //res = mum.SendMail(model);
                         ViewBag.SetLink = "http://Home/UserActivate/1234-2345-3456789";
-
                     }
                     res.Errors.ForEach(s => ModelState.AddModelError("", s.Message));
                     return View(model);
                 }
-                //Session["Login"] = res.Result
+
+                //Session["Login"] = res.Result;
                 CurrentSession.Set("Login", res.Result);
                 return RedirectToAction("Index");
-
             }
+
             return View(model);
 
         }
@@ -125,6 +129,84 @@ namespace MyNotes.MVC.Controllers
             return View(res.Result);
 
         }
+        public ActionResult EditProfile()
+        {
+            if (CurrentSession.User is MyNotesUser currentUser) res = mum.GetUserById(currentUser.Id);
+            if (res.Errors.Count > 0)
+            {
+                ErrorViewModel errorNotifyObj = new ErrorViewModel()
+                {
+                    Title = "Hata olustu",
+                    Items = res.Errors
+                };
+                return View("Error", errorNotifyObj);
+            }
+
+            return View(res.Result);
+        }
+
+        [HttpPost]
+        public ActionResult EditProfile(MyNotesUser model, HttpPostedFileBase ProfileImage)
+        {
+            ModelState.Remove("ModifiedUserName");
+            ModelState.Remove("CreatedOn");
+            ModelState.Remove("ModifiedOn");
+            if (ModelState.IsValid)
+            {
+                if (ProfileImage != null && ProfileImage.ContentType == "image/jpeg" || ProfileImage.ContentType == "image/jpg" || ProfileImage.ContentType == "image/png")
+                {
+                    string filename = $"user_{model.Id}.{ProfileImage.ContentType.Split('/')[1]}";
+                    ProfileImage.SaveAs(Server.MapPath($"~/images/{filename}"));
+                    model.ProfileImageFileName = filename;
+                }
+
+                res = mum.UpdateProfile(model);
+                if (res.Errors.Count > 0)
+                {
+                    ErrorViewModel errorNotifyObj = new ErrorViewModel()
+                    {
+                        Title = "Profil guncellenemedi",
+                        Items = res.Errors,
+                        RedirectingUrl = "/Home/EditProfile"
+                    };
+                    return View("Error", errorNotifyObj);
+                }
+                CurrentSession.Set("login", res.Result);
+                return RedirectToAction("ShowProfile");
+            }
+
+            return View(model);
+        }
+        public ActionResult SendEmail(LoginViewModel model)
+        {
+            model.Password = TempData["pass"].ToString();
+            model.UserName = TempData["uname"].ToString();
+
+
+            mum.SendMail(model);
+            return RedirectToAction("Login");
+        }
+        public ActionResult DeleteProfile()
+        {
+            if (CurrentSession.User is MyNotesUser currentUser)
+            {
+                res = mum.RemoveUserById(currentUser.Id);
+            }
+
+            if (res.Errors.Count > 0)
+            {
+                ErrorViewModel errorNotifyObj = new ErrorViewModel()
+                {
+                    Title = "Profil silinemedi.",
+                    Items = res.Errors,
+                    RedirectingUrl = "/Home/ShowProfile"
+                };
+                return View("Error", errorNotifyObj);
+            }
+            CurrentSession.Clear();
+            return RedirectToAction("Index");
+        }
+
 
         public ActionResult Index()
         {
@@ -146,7 +228,7 @@ namespace MyNotes.MVC.Controllers
         }
         public ActionResult LogOut()
         {
-            Session.Clear();
+            //Session.Clear();
             CurrentSession.Clear();
             return RedirectToAction("Index");
         }
