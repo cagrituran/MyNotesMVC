@@ -147,7 +147,7 @@ namespace MyNotes.BusinessLayer
             res.Result.IsAdmin = data.IsAdmin;
             res.Result.IsActive = data.IsActive;
 
-            if (base.Update(res.Result) > 0)
+            if (base.Update(res.Result) == 0)
             {
                 res.AddError(EntityLayer.Messages.ErrorMessageCode.UserCouldNotUpdated, "Kullanici bilgileri guncellenemedi");
             }
