@@ -106,6 +106,14 @@ onu controllerda kullanýp viewa attýk ve böylece controllerý boþaltýp iþ yükünü 
 Create AR olusturduk
 Kayýt Ýþlemi gerçekleþti
 Category Cache'e atýldý
+---------------------------------------------------------------11.04.22-----------------------------------------------------
+MyLikedNotes Metodu NoteController'a yazýldý
+MyNotesUser Controller eklendi ve deðiþtirildi
+BusniessLayerResult'ýn MyNotesuser'ý MynosterUserManager'a yazýldý Update VE Insert iþlemleri newlenerek yapýldý
+Kullanýcýlar ekle update iþlemleri bitti
+Profili qöster kýsýmlarýnýn calýsmasý için homecontroller'a gittik ve AR'ler yazýldý
+Mynotesuermanagar'e metod yazýldý id çekmek için sonra homecontrollerdaki ar de kullanýldý
+sonra MVC de ViewModel ErrorViewModel olusturduk miras aldýk sonra HomeControllerda ShowPRofile view olusturup kodlarý yazdýk
 
 
 

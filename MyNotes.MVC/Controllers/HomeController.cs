@@ -109,6 +109,22 @@ namespace MyNotes.MVC.Controllers
             return View(errors);
 
         }
+        public ActionResult ShowProfile()
+        {
+            if (CurrentSession.User is MyNotesUser currentUser) res = mum.GetUserById(currentUser.Id);
+            if (res.Errors.Count > 0)
+            {
+                ErrorViewModel errorNotifyObj = new ErrorViewModel()
+                {
+                    Title = "Hata Olustu",
+                    Items = res.Errors
+
+                };
+                return View("Error", errorNotifyObj);
+            }
+            return View(res.Result);
+
+        }
 
         public ActionResult Index()
         {
