@@ -2,7 +2,7 @@
 using MyNotes.BusinessLayer.ValueObject;
 using MyNotes.Common.Helper;
 using MyNotes.EntityLayer;
-
+using MyNotes.EntityLayer.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace MyNotes.BusinessLayer
         private BusinessLayerResult<MyNotesUser> res = new BusinessLayerResult<MyNotesUser>();
         public BusinessLayerResult<MyNotesUser> LoginUser(LoginViewModel data)
         {
-            res.Result = Find(s => s.UserName == data.UserName && s.Password == data.Password);
+            res.Result = Find(s => s.UserName == data.UserName && s.Password == data.Password && s.IsDelete!=true);
             if (res.Result != null)
             {
                 if (!res.Result.IsActive)
@@ -64,6 +64,7 @@ namespace MyNotes.BusinessLayer
                     IsActive = false,
                     IsAdmin = false,
                     ActivateGuid = Guid.NewGuid(),
+                    ProfileImageFileName = "users.jpg"
                 });
                 if (dbResult > 0)
                 {
@@ -160,6 +161,73 @@ namespace MyNotes.BusinessLayer
             {
                 res.AddError(EntityLayer.Messages.ErrorMessageCode.UserNotFound, "Kullanici bulunamadi");
             }
+            return res;
+        }
+
+        public BusinessLayerResult<MyNotesUser> RemoveUserById(int id)
+        {
+            res.Result = Find(s => s.Id == id);
+            if (res.Result != null)
+            {
+                res.Result.IsDelete = true;
+                if (base.Update(res.Result) == 0)
+                {
+                    res.AddError(ErrorMessageCode.UserCouldNotRemove, "Kullanici silinemedi.");
+                }
+            }
+            else
+            {
+                res.AddError(ErrorMessageCode.UserCouldNotFind, "Boyle bir kullanici bulunamadi..");
+            }
+
+            return res;
+        }
+        public BusinessLayerResult<MyNotesUser> SendMail(LoginViewModel data)
+        {
+            res.Result = Find(s => s.Password == data.Password && s.UserName == data.UserName
+            );
+            //Activasyon maili gonderilecek
+
+            string siteUri = ConfigHelper.Get<string>("SiteRootUri");
+            string activateUri = $"{siteUri}/Home/UserActivate/{res.Result.ActivateGuid}";
+            string body =
+                $"Merhaba {res.Result.UserName};<br><br> Hesabinizi aktiflestirmek icin <a href='{activateUri}' target='_blank'>bu linke tiklayin</a>.";
+            MailHelper.SendMail(body, res.Result.Email, "MyNotes Aktivasyon mail hizmet");
+
+            return res;
+        }
+        public BusinessLayerResult<MyNotesUser> UpdateProfile(MyNotesUser data)
+        {
+            MyNotesUser user = Find(s => s.Id != data.Id && (s.UserName == data.UserName || s.Email == data.Email));
+            if (user != null && user.Id != data.Id)
+            {
+                if (user.UserName == data.UserName)
+                {
+                    res.AddError(ErrorMessageCode.UserAlreadyActive, "Bu kullanici adi daha once kaydedilmis.");
+                }
+                if (user.Email == data.Email)
+                {
+                    res.AddError(ErrorMessageCode.EmailAlreadyExist, "Bu email daha once kaydedilmis.");
+                }
+                return res;
+            }
+            res.Result = Find(s => s.Id == data.Id);
+            res.Result.Email = data.Email;
+            res.Result.Name = data.Name;
+            res.Result.LastName = data.LastName;
+            res.Result.Password = data.Password;
+            res.Result.UserName = data.UserName;
+            res.Result.IsDelete = data.IsDelete;
+            if (!string.IsNullOrEmpty(data.ProfileImageFileName))
+            {
+                res.Result.ProfileImageFileName = data.ProfileImageFileName;
+            }
+
+            if (base.Update(res.Result) == 0)
+            {
+                res.AddError(ErrorMessageCode.ProfileCouldNotUpdated, "Profil guncellenemedi.");
+            }
+
             return res;
         }
     }
