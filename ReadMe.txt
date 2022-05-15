@@ -76,6 +76,14 @@ App diye bir class olusturduk içinde bir nesne olusturduk
 ve MVC'nin içine Inýt diye kalsör açýp içine WebCommon diye class açýp içine kodlar yazýldý 
 Ardýndan Global.asaxda metodu çalýstýrdýk
 Repository'e gidip Update kýsmýný deðiþtirdik
+---------------------------------------------------------------06.04.22-----------------------------------------------------
+Silme,yorum ekleme iþlemi için ajax ve jquery kodlarý yazýldý antiforgery silmeyi unutma.
+Register iþlemleri için HomeController ActionResult ve MyNotesUserManager dolduruldu
+Helper folderýnýn içine ConfigHelper MAilhelper olusturuldu
+Sonra Web.configin içine bazý key-value pairleri tanýmlandý(aktivasyon kodu göndermek için)
+ConfigHelper'a metod yazýldý
+MailHelper 'a metodlar yazýldý
+Sonra ActionResult tamamen bitirildi
 
 
 

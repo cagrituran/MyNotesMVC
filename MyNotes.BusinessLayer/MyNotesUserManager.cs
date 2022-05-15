@@ -1,5 +1,6 @@
 ﻿using MyNotes.BusinessLayer.Abstract;
 using MyNotes.BusinessLayer.ValueObject;
+using MyNotes.Common.Helper;
 using MyNotes.EntityLayer;
 
 using System;
@@ -36,6 +37,45 @@ namespace MyNotes.BusinessLayer
             }
             return res;
 
+        }
+        public BusinessLayerResult<MyNotesUser> RegisterUser(RegisterViewModel data)
+        {
+            MyNotesUser user = Find(s => s.UserName == data.Username || s.Email == data.Email);
+            if (user != null)
+            {
+                if (user.UserName == data.Username)
+                {
+                    res.AddError(EntityLayer.Messages.ErrorMessageCode.UserNameAlreadyExist, "Bu kullanici adi daha once alinmis");
+                }
+                if (user.Email == data.Email)
+                {
+                    res.AddError(EntityLayer.Messages.ErrorMessageCode.EmailAlreadyExist, "bu email daha once kullanilmis");
+                }
+            }
+            else
+            {
+                int dbResult = base.Insert(new MyNotesUser()
+                {
+                    Name = data.Name,
+                    LastName = data.Lastname,
+                    Email = data.Email,
+                    UserName = data.Username,
+                    Password = data.Password,
+                    IsActive = false,
+                    IsAdmin = false,
+                    ActivateGuid = Guid.NewGuid(),
+                });
+                if (dbResult > 0)
+                {
+                    res.Result = Find(s => s.Email == data.Email && s.UserName == data.Username);
+                    //Activasyon Maili Gonderilecek
+                    string siteUri = ConfigHelper.Get<string>("SiteRootUri");
+                    string activateUri = $"{siteUri}/Home/UserActivate/{res.Result.ActivateGuid}";
+                    string body = $"Merhaba {res.Result.UserName};<br><br> Hesabinizi aktiflestirmek icin <a href='{activateUri}' target='_blank'>bu linke tiklayin</a>.";
+                    MailHelper.SendMail(body, res.Result.Email, "My Notes Activation Mail Hizmeti");
+                }
+            }
+            return res;
         }
     }
 }
