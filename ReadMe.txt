@@ -95,7 +95,17 @@ HomeControllerda ActivateUser AR yazýldý sonra MyNotesUserManager'a gidip Metodu
 Sonra HomeControllerda UserActivateCancel  ve UserActivateOk AR leri ve sonra Viewleri yapýldý
 Sayfamdaki bir kategoriye týkladýgýmda o kategoriye ait notlar gelsin
 Bunun için HomeControllerda ByCategoryId AR'si yazýldý fakat Index'e Model gönderdiðimizde sýkýntý bütün yorumlarý gösterememesi oldugu için HomeControllerda Index AR'si deðiþtirildi
-
+---------------------------------------------------------------08.04.22-----------------------------------------------------
+CategoryManager'a metodlar eklendi(admin yetkisi olanlar Kategorileri görme ve ekleme yetkisine sahip oldugu için bunun metodlarý yazýldý)
+CategoryController'da kod eklendi category indexin href'ini deðiþtirdi
+alttaki kod deðiþtirildi PartialNavda hrefler verildi Index'teki kodlar yazýldý
+ve Bootstrap.cshtmlde helper yazýlarak kolaylýk saðlandý
+CategoryControllerda Details AR yazýldý
+CategoryManager'a metod eklendi
+onu controllerda kullanýp viewa attýk ve böylece controllerý boþaltýp iþ yükünü businesslayer'a verdik
+Create AR olusturduk
+Kayýt Ýþlemi gerçekleþti
+Category Cache'e atýldý
 
 
 

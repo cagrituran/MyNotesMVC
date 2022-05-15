@@ -233,6 +233,8 @@
     <Content Include="Views\Shared\Ok.cshtml" />
     <Content Include="Views\Home\UserActivateCancel.cshtml" />
     <Content Include="Views\Home\UserActivateOk.cshtml" />
+    <Content Include="Views\Category\Create.cshtml" />
+    <Content Include="Views\Category\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
