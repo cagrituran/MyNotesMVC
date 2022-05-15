@@ -43,7 +43,6 @@ MyNotes.MVC sað týk-add asp.net folder APP_code eklendi ve içine Bootstrap view 
 Kodlarýn kýsa güzekmesi için helper olarak yazmamýz gerekir
 Bootstrap-->docs-->modal kodu kopyala yapýp kodu alýp bootstrap.cshtml'e yapýstýrdýk ve deðiþtirdik
 id yi kullanmamýzýn sebebi her kayýt için farklý body olacaðýndan onu yakalamak amacýyla yazdýk ve js'de kullanacaðýmýz için kullandýk
-
 bu kodu calýstýrmamýz için Home-->Index'in alt tarafýna bootstrap ve jquery güncelleyip alt kýsmýna script dosyasýný ekledik
 References kýsmýna DataAccessLayer'ý Referans olarak ekledik ve Controllers'a Add Controller yapýp EntityFrameWorklu olan kýsmý seçip Yukarýda Comment seçip alttaki nide seçip olusturuduk
 fakat bu neye yorum yapacaðýmý göstermedigimden yapýyý degistireceðiz index'e gittik
@@ -55,6 +54,18 @@ BusinessLayer'a MyNotesUserManager classý açtýk
 MyNotesUser'daki bütün degiskenleri istemedigim icin entitylayerda valueobject folderý ve loginviewmodel classý acýp 2 tanesini tanýmladýk
 HomeController'a gerekli düzenlemeler yapýldý
 Sonra Login Viewini olusturup html kodlarýný yazdýk
+---------------------------------------------------------------01.04.22-----------------------------------------------------
+Ýsmimizin sað üstte gözükmesi için PartialNav ve Layout kodlarý düzenlendi
+HomeController'da LogOut ActionResultý yazýlýp PartialNav'da sonra Cýkýs'ýn href'ine eklendi
+Login sayfasýndayken category,footer ve header kýsmý gözükmemesi için JQuery ile Login sayfasýnýn altýna manipüle edilen kodlar yazýldý
+Sonrasýnda bootstrap kodlarýyla kutucuk merkeze taþýndý ve resim eklendi
+EntityLayer kullanmamak için businesslayer'a modelsê currentsession açýlýp içine kod yazýldý ve partialnavda kullanýldý çalýstý
+sonra currentsessionda yer alan kod sadece login session için geçerli genelleþtirmek için kod degistirildi(HomeControllerda bi kýsým degistirildi)
+HomeControllerda LogOut a CurrentSession clasýnýn metodu clearlanarak eklendi
+HomeControllerda Register ActionResultý yazýlýp Add View Yapýldý ve ValueObject içine RegisterViewModel açýldý
+Ýçine Kodlar yazýldý sonra Register Viewýný doldurduk ve Sayfayý kullanýlabilir hale getirdik
+Sonra Login.RegisterStyle.css Contentin içine acýp css kodlarýný yazdýk ve login,register viewýnýn içine linkini hrefledik
+
 
 
 

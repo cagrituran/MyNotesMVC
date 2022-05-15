@@ -1,4 +1,5 @@
 ﻿using MyNotes.BusinessLayer;
+using MyNotes.BusinessLayer.Models;
 using MyNotes.BusinessLayer.ValueObject;
 using MyNotes.EntityLayer;
 
@@ -34,12 +35,17 @@ namespace MyNotes.MVC.Controllers
                     res.Errors.ForEach(s => ModelState.AddModelError("", s.Message));
                     return View(model);
                 }
-                Session["Login"] = res.Result;
+                //Session["Login"] = res.Result
+                CurrentSession.Set("Login", res.Result);
                 return RedirectToAction("Index");
 
             }
             return View(model);
 
+        }
+        public ActionResult Register()
+        {
+            return View();
         }
         public ActionResult Index()
         {
@@ -59,6 +65,12 @@ namespace MyNotes.MVC.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+        public ActionResult LogOut()
+        {
+            Session.Clear();
+            CurrentSession.Clear();
+            return RedirectToAction("Index");
         }
     }
 }
