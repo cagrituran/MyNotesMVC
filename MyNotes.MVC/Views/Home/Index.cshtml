@@ -90,4 +90,53 @@
             $(modalCommentBodyId).load("/Comment/ShowNoteComments/" + noteId);
         });
     });
+    function doComment(btn, e, commentId, spanId) {
+        var button = $(btn);
+        var mode = button.data('edit-mode');
+        if (e === 'edit_clicked') {
+            if (!mode) {
+                button.data('edit-mode', true);
+                button.removeClass('btn-warning');
+                button.addClass('btn-success');
+                var btnSpan = button.find('span');
+                btnSpan.removeClass('bi-pencil');
+                btnSpan.addClass('bi-check');
+                $(spanId).addClass('editable');
+                $(spanId).attr('contenteditable', true);
+                $(spanId).focus();
+
+            }
+            else {
+
+                button.data('edit-mode', false);
+                button.removeClass('btn-success');
+                button.addClass('btn-warning');
+                var btnSpan = button.find('span');
+                btnSpan.removeClass('bi-check');
+                btnSpan.addClass('bi-pencil');
+                $(spanId).addClass('editable');
+                $(spanId).attr('contenteditable', false);
+
+
+                var txt = $(spanId).text();
+                $.ajax({
+                    method: "POST",
+                    url: "/Comment/Edit/" + commentId,
+                    data: { text: txt }
+                }).done(function (data) {
+                    if (data.result) {
+                        //yorumlari tekrar yukleme
+                        $(modalCommentBodyId).load("/Comment/ShowNoteComments/" + noteId);
+                    }
+                    else {
+                        alert("Yorumunuz Guncellenemedi.");
+                    }
+                }).fail(function () {
+                    alert("Sunucuyla baglanti kurulamadi.");
+                });
+
+            }
+
+        }
+    }
 </script>

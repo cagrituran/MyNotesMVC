@@ -71,6 +71,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MyNotes.Common\MyNotes.Common.csproj">
+      <Project>{508E46F1-1340-4CA9-9C2B-A95C0E60291D}</Project>
+      <Name>MyNotes.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MyNotes.CoreLayer\MyNotes.CoreLayer.csproj">
       <Project>{F72B6449-B3CD-4E10-A032-DA80A66901C7}</Project>
       <Name>MyNotes.CoreLayer</Name>
