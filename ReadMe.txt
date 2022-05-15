@@ -38,6 +38,23 @@ CommandManager,LikedManager,NoteManager olusturuldu
 Sonuclarýmýn döneceði bir BusinessLayerResult olusturuldu
 MyNotesEntityLayer içine Messages folderýnýn içine ErrorMessageCode,ErrorMessageObj olusturuldu biri kodlarý taþýyacak diðeri bunu obje olarak taþýr
 Home-index içi silindi ve dün indirdigimiz index kýsmýndan bi part alýndý ve bir component merkezde gözüktü ve içerisi epey dolduruldu düzenlendi
+ ---------------------------------------------------------------31.03.22-----------------------------------------------------
+MyNotes.MVC sað týk-add asp.net folder APP_code eklendi ve içine Bootstrap view ekledik
+Kodlarýn kýsa güzekmesi için helper olarak yazmamýz gerekir
+Bootstrap-->docs-->modal kodu kopyala yapýp kodu alýp bootstrap.cshtml'e yapýstýrdýk ve deðiþtirdik
+id yi kullanmamýzýn sebebi her kayýt için farklý body olacaðýndan onu yakalamak amacýyla yazdýk ve js'de kullanacaðýmýz için kullandýk
+
+bu kodu calýstýrmamýz için Home-->Index'in alt tarafýna bootstrap ve jquery güncelleyip alt kýsmýna script dosyasýný ekledik
+References kýsmýna DataAccessLayer'ý Referans olarak ekledik ve Controllers'a Add Controller yapýp EntityFrameWorklu olan kýsmý seçip Yukarýda Comment seçip alttaki nide seçip olusturuduk
+fakat bu neye yorum yapacaðýmý göstermedigimden yapýyý degistireceðiz index'e gittik
+altýna jQuery komutlarýný yazdýk $ ile baþlar
+Yorumlarýn içini göstermemiz için bi tasarým olusturmamýz lazým bunun icinde partialView olusturmamýz lazým
+Olusturduk ve CommentControllerin içinde note üzerinden ilerlendi örn. idsi 1 olan notun 10 yorumu var idsi 2 olan notun 5 yorumu var gibi...
+PartialComments'in içine html kodlarý yazýldý
+BusinessLayer'a MyNotesUserManager classý açtýk
+MyNotesUser'daki bütün degiskenleri istemedigim icin entitylayerda valueobject folderý ve loginviewmodel classý acýp 2 tanesini tanýmladýk
+HomeController'a gerekli düzenlemeler yapýldý
+Sonra Login Viewini olusturup html kodlarýný yazdýk
 
 
 

@@ -65,7 +65,7 @@
                                 </button>
                             </p>
                             <p>
-                                <button class="btn btn-outline-light text-dark btn-sm" data-bs-toggle="modal" data-bs-target="#modal_comment" data-note-id="note.Id">
+                                <button class="btn btn-outline-light text-dark btn-sm" data-bs-toggle="modal" data-bs-target="#modal_comment" data-note-id="@note.Id">
                                     <i class="bi bi-chat-left-dots-fill text"> </i> Yorumlar
                                 </button>
                             </p>
@@ -76,3 +76,18 @@
         </div>
     </div>
 </section>
+
+@Bootstrap.ModalPopup("modal_comment", "Yorumlar")
+<script src="~/Scripts/jquery-3.6.0.min.js"></script>
+<script>
+    let noteId = -1;
+    let modalCommentBodyId = "#modal_comment_body";
+    $(function () {
+        $('#modal_comment').on('show.bs.modal', function (e) {
+            var btn = $(e.relatedTarget);
+            noteId = btn.data("note-id");
+            console.log("noteId =" + noteId);
+            $(modalCommentBodyId).load("/Comment/ShowNoteComments/" + noteId);
+        });
+    });
+</script>
