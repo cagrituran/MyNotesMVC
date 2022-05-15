@@ -29,6 +29,15 @@ View'in içine kodlar yazýldý
 Shared->Layout'ýn içine hocanýn kodlarý yapýstýrýldý
 Scripts->script.js(wpda) yollandý -- zortladýk býraktýk
 Sonra bi link gönderdi onu freedownload yaptýk sonra Content'in içine style.css Scripts'in içine script.js eklendi sonra html dosyasýný sürekleyip layouttaki renderbody alýp html dosyasýndaki section kýsmýný silip oraya yerleþtirip tekrar layout'a alýp programý çalýstýrdýk
+---------------------------------------------------------------29.03.22-----------------------------------------------------
+Layoutta bir takým düzenlemeler Header kýsmýný düzenledik dropdownlarý ayarladýk vs
+Sharedin içine _PartialCategories olarak partial view açtýk çünkü layout içindeki kod kalabalýðýný engelleyerek partiallara ayýrdýk
+_PartialFooter isimli bir view açýk footer kýsmýný oraya taþýdýk
+_PartialNav isimli bir view açýk footer kýsmýný oraya taþýdýk
+CommandManager,LikedManager,NoteManager olusturuldu
+Sonuclarýmýn döneceði bir BusinessLayerResult olusturuldu
+MyNotesEntityLayer içine Messages folderýnýn içine ErrorMessageCode,ErrorMessageObj olusturuldu biri kodlarý taþýyacak diðeri bunu obje olarak taþýr
+Home-index içi silindi ve dün indirdigimiz index kýsmýndan bi part alýndý ve bir component merkezde gözüktü ve içerisi epey dolduruldu düzenlendi
 
 
 
