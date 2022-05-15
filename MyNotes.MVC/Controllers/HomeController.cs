@@ -2,10 +2,12 @@
 using MyNotes.BusinessLayer.Models;
 using MyNotes.BusinessLayer.ValueObject;
 using MyNotes.EntityLayer;
-
+using MyNotes.EntityLayer.Messages;
+using MyNotes.MVC.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -14,7 +16,17 @@ namespace MyNotes.MVC.Controllers
     public class HomeController : Controller
     {
         private readonly MyNotesUserManager mum = new MyNotesUserManager();
+        private readonly NoteManager nm = new NoteManager();
         private BusinessLayerResult<MyNotesUser> res;
+        public ActionResult ByCategoryId(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            List<Note> notes = nm.QList().Where(s => s.Category.Id == id && s.isDraft == false).OrderByDescending(s => s.ModifiedOn).ToList();
+            return View("Index", notes);
+        }
         public ActionResult Login()
         {
             return View();
@@ -60,15 +72,46 @@ namespace MyNotes.MVC.Controllers
                     return View(model);
 
                 }
-                return RedirectToAction("Login");
+                OkViewModel notifyObj = new OkViewModel()
+                {
+                    Title = "Kayıt Başarılı",
+                    RedirectingUrl = "/Home/Login"
+                };
+                notifyObj.Items.Add("Lütfen e-posta adresinize gönderdigimiz aktivaasyon linkine tıklayarak hesabınızı aktive ediniz ");
+                return View("Ok", notifyObj);
+                //return RedirectToAction("Login");
             }
             return View(model);
+        }
+        public ActionResult UserActivate(Guid id)
+        {
+            res = mum.ActivateUser(id);
+            if (res.Errors.Count > 0)
+            {
+                TempData["errors"] = res.Errors;
+                return RedirectToAction("UserActivateCancel");
+            }
+            return RedirectToAction("UserActivateOk");
+        }
+        public ActionResult UserActivateOk()
+        {
+            return View();
+        }
+        public ActionResult UserActivateCancel()
+        {
+            List<ErrorMessageObj> errors = null;
+            if (TempData["errors"] != null)
+            {
+                errors = TempData["errors"] as List<ErrorMessageObj>;
+
+            }
+            return View(errors);
+
         }
 
         public ActionResult Index()
         {
-            Test test = new Test();
-            return View();
+            return View(nm.QList().OrderByDescending(s => s.ModifiedOn).ToList());
         }
 
         public ActionResult About()

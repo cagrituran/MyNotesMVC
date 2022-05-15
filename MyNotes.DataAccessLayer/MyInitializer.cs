@@ -8,39 +8,40 @@ using System.Threading.Tasks;
 
 namespace MyNotes.DataAccessLayer
 {
-    public class MyInitializer:CreateDatabaseIfNotExists<MyNoteContext>
+    public class MyInitializer : CreateDatabaseIfNotExists<MyNoteContext>
     {
         protected override void Seed(MyNoteContext context)
         {
             MyNotesUser admin = new MyNotesUser()
             {
-                 Name = "Cagri",
-                 LastName = "Turan",
-                 Email = "cagri.turann@hotmail.com",
-                 IsActive = true,
-                 IsAdmin = true,
-                 UserName = "cagrituran",
-                 Password = "1234",
-                 CreatedOn = DateTime.Now,
-                 ModifiedOn = DateTime.Now,
-                 ModifiedUserName = "system"
+                Name = "Onur",
+                LastName = "Agici",
+                Email = "9731013@gmail.com",
+                //ActivateGuid = Guid.NewGuid(),
+                IsActive = true,
+                IsAdmin = true,
+                UserName = "onuragici",
+                Password = "123456",
+                CreatedOn = DateTime.Now,
+                ModifiedOn = DateTime.Now,
+                ModifiedUserName = "system"
             };
-
-            MyNotesUser stduser = new MyNotesUser()
+            MyNotesUser stdUser = new MyNotesUser()
             {
-                Name = "raf",
-                LastName = "baf",
-                Email = "cta",
+                Name = "Recep",
+                LastName = "Ivedik",
+                Email = "recebim57@gmail.com",
+                //ActivateGuid = Guid.NewGuid(),
                 IsActive = true,
                 IsAdmin = false,
-                UserName = "cfs",
-                Password = "1234",
+                UserName = "recebim57",
+                Password = "654321",
                 CreatedOn = DateTime.Now,
                 ModifiedOn = DateTime.Now,
                 ModifiedUserName = "system"
             };
             context.MyNotesUsers.Add(admin);
-            context.MyNotesUsers.Add(stduser);
+            context.MyNotesUsers.Add(stdUser);
 
             for (int i = 0; i < 8; i++)
             {
@@ -49,83 +50,75 @@ namespace MyNotes.DataAccessLayer
                     Name = FakeData.NameData.GetFirstName(),
                     LastName = FakeData.NameData.GetSurname(),
                     Email = FakeData.NetworkData.GetEmail(),
+                    //ActivateGuid = Guid.NewGuid(),
                     IsActive = true,
                     IsAdmin = false,
                     UserName = $"user-{i}",
                     Password = "123",
-                    CreatedOn = FakeData.DateTimeData.GetDatetime(DateTime.Now.AddYears(-1),DateTime.Now),
-                    ModifiedOn =  FakeData.DateTimeData.GetDatetime(DateTime.Now.AddYears(-1), DateTime.Now),
-                    ModifiedUserName =  $"user-{i}",
-
+                    CreatedOn = FakeData.DateTimeData.GetDatetime(DateTime.Now.AddYears(-1), DateTime.Now),
+                    ModifiedOn = FakeData.DateTimeData.GetDatetime(DateTime.Now.AddYears(-1), DateTime.Now),
+                    ModifiedUserName = $"user-{i}"
                 };
                 context.MyNotesUsers.Add(user);
             }
-
             context.SaveChanges();
-            List<MyNotesUser> userList =context.MyNotesUsers.ToList();
+            List<MyNotesUser> userList = context.MyNotesUsers.ToList();
+
+
+
             for (int i = 0; i < 10; i++)
             {
-                //Adding Categories
                 Category cat = new Category()
                 {
                     Tittle = FakeData.PlaceData.GetStreetName(),
                     Description = FakeData.PlaceData.GetAddress(),
-                    CreatedOn =  FakeData.DateTimeData.GetDatetime(DateTime.Now.AddYears(-1), DateTime.Now),
-                    ModifiedOn =  FakeData.DateTimeData.GetDatetime(DateTime.Now.AddYears(-1), DateTime.Now),
-                    ModifiedUserName = "system"
-
+                    CreatedOn = DateTime.Now,
+                    ModifiedOn = DateTime.Now,
+                    ModifiedUserName = "onuragici"
                 };
                 context.Categories.Add(cat);
-                //Adding Notes
-                for (int j = 0; j < FakeData.NumberData.GetNumber(5,9); j++)
+                //Adding fake Notes...
+                for (int k = 0; k < FakeData.NumberData.GetNumber(5, 9); k++)
                 {
-                    MyNotesUser owner = userList[FakeData.NumberData.GetNumber(0, userList.Count-1)];
+                    MyNotesUser owner = userList[FakeData.NumberData.GetNumber(0, userList.Count - 1)];
                     Note note = new Note()
                     {
-                        Tittle = FakeData.TextData.GetAlphabetical(FakeData.NumberData.GetNumber(5, 25)),
-                        Text = FakeData.TextData.GetSentences(FakeData.NumberData.GetNumber(1,3)),
+                        Tittle = FakeData.TextData.GetAlphabetical(FakeData.NumberData.GetNumber(5, 20)),
+                        Text = FakeData.TextData.GetSentences(FakeData.NumberData.GetNumber(1, 3)),
                         isDraft = false,
-                        LikeCount = FakeData.NumberData.GetNumber(1,9),
+                        LikeCount = FakeData.NumberData.GetNumber(1, 9),
                         Owner = owner,
-                        CreatedOn =  FakeData.DateTimeData.GetDatetime(DateTime.Now.AddYears(-1), DateTime.Now),
-                        ModifiedOn=  FakeData.DateTimeData.GetDatetime(DateTime.Now.AddYears(-1), DateTime.Now),
-                        ModifiedUserName = owner.UserName,
-
+                        CategoryId = FakeData.NumberData.GetNumber(1, 9),
+                        CreatedOn = FakeData.DateTimeData.GetDatetime(DateTime.Now.AddYears(-1), DateTime.Now),
+                        ModifiedOn = FakeData.DateTimeData.GetDatetime(DateTime.Now.AddYears(-1), DateTime.Now),
+                        ModifiedUserName = owner.UserName
                     };
-                    context.Notes.Add(note);
-                    //Adding Comment
-                    for (int k = 0; k < FakeData.NumberData.GetNumber(3,5); k++)
+                    cat.Notes.Add(note);
+                    //Adding fake comments
+                    for (int j = 0; j < FakeData.NumberData.GetNumber(3, 5); j++)
                     {
-                        MyNotesUser comment_owner = userList[FakeData.NumberData.GetNumber(0,userList.Count-1)];
+                        MyNotesUser comment_owner = userList[FakeData.NumberData.GetNumber(0, userList.Count - 1)];
                         Comment comment = new Comment()
                         {
                             Text = FakeData.TextData.GetSentence(),
                             Owner = comment_owner,
                             CreatedOn = FakeData.DateTimeData.GetDatetime(DateTime.Now.AddYears(-1), DateTime.Now),
-                            ModifiedOn =  FakeData.DateTimeData.GetDatetime(DateTime.Now.AddYears(-1), DateTime.Now),
-                            ModifiedUserName = comment_owner.UserName,
-
-
+                            ModifiedOn = FakeData.DateTimeData.GetDatetime(DateTime.Now.AddYears(-1), DateTime.Now),
+                            ModifiedUserName = comment_owner.UserName
                         };
-                        context.Comments.Add(comment);
-                    //Adding Like
+                        note.Comments.Add(comment);
                     }
-                    context.SaveChanges();
-                    for (int k = 0; k < note.LikeCount; k++)
+                    //Adding fake likes....
+                    for (int m = 0; m < note.LikeCount; m++)
                     {
                         Liked liked = new Liked()
                         {
-                            LikedUser = userList[k],
-
+                            LikedUser = userList[m]
                         };
-                        context.Likes.Add(liked);
-
+                        note.Likes.Add(liked);
                     }
                 }
-
-
             }
-           
             context.SaveChanges();
         }
     }

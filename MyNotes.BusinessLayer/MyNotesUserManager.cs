@@ -77,5 +77,24 @@ namespace MyNotes.BusinessLayer
             }
             return res;
         }
+        public BusinessLayerResult<MyNotesUser> ActivateUser(Guid id)
+        {
+            res.Result = Find(s => s.ActivateGuid == id);
+            if (res.Result != null)
+            {
+                if (res.Result.IsActive)
+                {
+                    res.AddError(EntityLayer.Messages.ErrorMessageCode.UserAlreadyActive, "Kullanici zaten Aktif");
+                    return res;
+                }
+                res.Result.IsActive = true;
+                Update(res.Result);
+            }
+            else
+            {
+                res.AddError(EntityLayer.Messages.ErrorMessageCode.ActivateIdDoesNotExist, "Böyle bir aktivasyon kodu yoktur");
+            }
+            return res;
+        }
     }
 }

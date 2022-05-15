@@ -21,6 +21,10 @@ namespace MyNotes.EntityLayer
 
         public virtual List<Note> Notes { get; set; } = new List<Note>();
 
+        public Category()
+        {
+            Notes=new List<Note>();
+        }
         
     }
 }

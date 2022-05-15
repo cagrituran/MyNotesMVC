@@ -84,6 +84,17 @@ Sonra Web.configin içine bazý key-value pairleri tanýmlandý(aktivasyon kodu gönd
 ConfigHelper'a metod yazýldý
 MailHelper 'a metodlar yazýldý
 Sonra ActionResult tamamen bitirildi
+---------------------------------------------------------------07.04.22-----------------------------------------------------
+Mail geliyor fakat linke týklandýgýnda karþýlamamýz gerek
+MVC ye ViewModel açýldý içine NotifyViewModelBase(gelecek her hatayý karþýlayacak)
+içine ihtiyacýmýz olan fieldlarý olusturduk
+ViewModel folderýna OkViewModel olusturup ctor'unda Title'ýn deðistirdik 
+HomeControllerda Register'ýn Postunun metodunun içini deðiþtirdik ve RegisterOk diye ActionResult olusturduk
+Sonra RegisterOk View ardýndan Ok View yazýldý
+HomeControllerda ActivateUser AR yazýldý sonra MyNotesUserManager'a gidip Metodu yazýldý
+Sonra HomeControllerda UserActivateCancel  ve UserActivateOk AR leri ve sonra Viewleri yapýldý
+Sayfamdaki bir kategoriye týkladýgýmda o kategoriye ait notlar gelsin
+Bunun için HomeControllerda ByCategoryId AR'si yazýldý fakat Index'e Model gönderdiðimizde sýkýntý bütün yorumlarý gösterememesi oldugu için HomeControllerda Index AR'si deðiþtirildi
 
 
 
